@@ -29,7 +29,7 @@ jobs:
     - name: Build iOS App Archive
       working-directory: frontend/ios/App
       run: |
-        xcodebuild -workspace App.xcworkspace -scheme App -configuration Debug clean build -sdk iphonesimulator -derivedDataPath build
+        xcodebuild -project App.xcodeproj -scheme App -configuration Debug clean build -sdk iphonesimulator -derivedDataPath build
         # Note: To build an installable .ipa for a physical device, Apple requires code signing
         # with a valid Developer Certificate and Provisioning Profile.
         # This builds the simulator .app which proves the code compiles successfully.
