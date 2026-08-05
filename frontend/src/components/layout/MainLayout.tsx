@@ -24,9 +24,6 @@ interface MainLayoutProps {
     onDashboardAdd: () => void;
     onDashboardDelete: (id: string) => void;
     onDashboardRename: (id: string, newName: string) => void;
-
-    // Navigation
-    activeView?: 'dashboard' | 'chat-page';
 }
 
 export function MainLayout({
@@ -42,7 +39,6 @@ export function MainLayout({
     onDashboardAdd,
     onDashboardDelete,
     onDashboardRename,
-    activeView,
 }: MainLayoutProps) {
     const activeDashboardName = dashboards.find(d => d.id === activeDashboardId)?.name || "Dashboard";
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -76,7 +72,6 @@ export function MainLayout({
                         onDashboardAdd={onDashboardAdd}
                         onDashboardDelete={onDashboardDelete}
                         onDashboardRename={onDashboardRename}
-                        activeView={activeView}
                     />
                 </div>
             </div>

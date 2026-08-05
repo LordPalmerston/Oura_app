@@ -11,8 +11,7 @@ import {
     Plus,
     MoreVertical,
     Trash2,
-    Edit2,
-    Sparkles
+    Edit2
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -31,8 +30,6 @@ interface AppSidebarProps {
     onDashboardDelete: (id: string) => void;
     onDashboardRename: (id: string, newName: string) => void;
     onSettingsClick?: () => void;
-    onChatPageSelect?: () => void;
-    activeView?: 'dashboard' | 'chat-page';
 }
 
 export function AppSidebar({
@@ -43,9 +40,7 @@ export function AppSidebar({
     onDashboardAdd,
     onDashboardDelete,
     onDashboardRename,
-    onSettingsClick,
-    onChatPageSelect,
-    activeView = 'dashboard'
+    onSettingsClick
 }: AppSidebarProps) {
     const [collapsed, setCollapsed] = useState(false);
     const [editingId, setEditingId] = useState<string | null>(null);

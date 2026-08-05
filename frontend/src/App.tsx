@@ -76,8 +76,6 @@ function DashboardApp() {
       onDashboardDelete={deleteDashboard}
       onDashboardRename={renameDashboard}
       
-      activeView={activeView}
-
       headerActions={
         activeView === 'dashboard' ? (
           <>

@@ -71,7 +71,7 @@ export function TrendChartCanvas({ data, dataKey, dataKeys, title, color, showPo
                 backgroundColor: (context: ScriptableContext<'line'>) => {
                     const chart = context.chart;
                     const { ctx, chartArea } = chart;
-                    if (!chartArea) return null; // Chart not fully initialized
+                    if (!chartArea) return undefined; // Chart not fully initialized
                     
                     let baseColor = seriesColor;
                     if (baseColor.startsWith('var(')) {
