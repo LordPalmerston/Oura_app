@@ -28,7 +28,7 @@ jobs:
     - name: Install dependencies and build web
       working-directory: frontend
       run: |
-        npm ci
+        npm install --legacy-peer-deps
         npm run build
         npx cap sync android
 
