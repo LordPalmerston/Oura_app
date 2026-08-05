@@ -66,13 +66,22 @@ export function TrendChartCanvas({ data, dataKey, dataKeys, title, color, showPo
 
             return {
                 label: label,
-                data: data.map(d => d[key] !== undefined ? d[key] : d.value),
+                data: data.map(d => Number(d[key] !== undefined ? d[key] : d.value)),
                 borderColor: seriesColor,
                 backgroundColor: (context: ScriptableContext<'line'>) => {
-                    const ctx = context.chart.ctx;
-                    const gradient = ctx.createLinearGradient(0, 0, 0, context.chart.height);
-                    gradient.addColorStop(0, `${seriesColor}80`); // 50% opacity
-                    gradient.addColorStop(1, `${seriesColor}00`); // 0% opacity
+                    const chart = context.chart;
+                    const { ctx, chartArea } = chart;
+                    if (!chartArea) return null; // Chart not fully initialized
+                    
+                    let baseColor = seriesColor;
+                    if (baseColor.startsWith('var(')) {
+                        // fallback if it's a CSS variable since we can't easily append '80' to it
+                        baseColor = '#3b82f6';
+                    }
+
+                    const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    gradient.addColorStop(0, `${baseColor}80`); // 50% opacity
+                    gradient.addColorStop(1, `${baseColor}00`); // 0% opacity
                     return gradient;
                 },
                 fill: true,

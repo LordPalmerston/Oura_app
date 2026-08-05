@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Cracked Oura</string>
+    <string name="title_activity_main">Cracked Oura</string>
+    <string name="package_name">com.elmoahorinta.crackedoura</string>
+    <string name="custom_url_scheme">com.elmoahorinta.crackedoura</string>
+</resources>

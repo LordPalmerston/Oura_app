@@ -1,4 +1,5 @@
-const BASE_URL = 'http://localhost:8000';
+import { dataService } from './localDataService';
+import { Browser } from '@capacitor/browser';
 
 export interface AutomationStatusResponse {
     status: 'idle' | 'login_needed' | 'otp_needed' | 'logged_in' | 'exporting' | 'ready_to_download' | 'downloading' | 'completed' | 'error';
@@ -14,102 +15,88 @@ export interface ChatMessage {
 export const api = {
     // --- Settings & Automation ---
     getSettings: async () => {
-        const res = await fetch(`${BASE_URL}/api/settings`);
-        if (!res.ok) throw new Error('Failed to fetch settings');
-        return res.json();
+        return dataService.getSettings();
     },
 
     saveSettings: async (settings: { daily_sync_time: string; email?: string }) => {
-        const res = await fetch(`${BASE_URL}/api/settings`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settings)
-        });
-        if (!res.ok) throw new Error('Failed to save settings');
-        return res.json();
+        return dataService.saveSettings(settings);
     },
 
     clearSession: async () => {
-        const res = await fetch(`${BASE_URL}/api/automation/clear-session`, { method: 'POST' });
-        if (!res.ok) throw new Error('Failed to clear session');
-        return res.json();
+        return { status: 'success' };
     },
 
-    startLogin: async (email: string) => {
-        const res = await fetch(`${BASE_URL}/api/automation/start-login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Login failed');
-        return data;
+    startLogin: async (_email: string) => {
+        return { status: 'success' };
     },
 
-    submitOtp: async (otp: string) => {
-        const res = await fetch(`${BASE_URL}/api/automation/submit-otp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ otp })
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'OTP failed');
-        return data;
+    submitOtp: async (_otp: string) => {
+        return { status: 'success' };
     },
 
     requestExport: async () => {
-        const res = await fetch(`${BASE_URL}/api/automation/request-export`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Export request failed');
-        return data;
+        // Open Oura Export page in Capacitor Browser
+        await Browser.open({ url: 'https://membership.ouraring.com/data-export' });
+        return { status: 'success', message: 'Opened Oura Export Page' };
     },
 
     checkStatus: async (): Promise<AutomationStatusResponse> => {
-        const res = await fetch(`${BASE_URL}/api/automation/check-status`, { method: 'POST' });
-        if (!res.ok) throw new Error('Failed to check status');
-        return res.json();
+        return { status: 'completed' };
     },
 
     downloadExport: async () => {
-        const res = await fetch(`${BASE_URL}/api/automation/download`, { method: 'POST' });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Download failed');
-        return data;
+        return { status: 'success' };
     },
 
     uploadZip: async (file: File) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        const res = await fetch(`${BASE_URL}/api/ingest/zip`, {
-            method: 'POST',
-            body: formData,
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.detail || 'Upload failed');
-        return data;
+        return dataService.ingestZip(file);
     },
 
     // --- Dashboard Data ---
     getDailyData: async (date: string) => {
-        const res = await fetch(`${BASE_URL}/api/days/${date}`);
-        if (!res.ok) throw new Error('Failed to fetch daily data');
-        return res.json();
+        return dataService.getDailyData(date);
     },
 
     getQuery: async (path: string, startDate?: string, endDate?: string) => {
-        const params = new URLSearchParams({ path });
-        if (startDate) params.append('start_date', startDate);
-        if (endDate) params.append('end_date', endDate);
-
-        const res = await fetch(`${BASE_URL}/api/query?${params.toString()}`);
-        if (!res.ok) throw new Error('Failed to fetch query data');
-        return res.json();
+        return dataService.getQuery(path, startDate, endDate);
     },
 
     getSchema: async () => {
-        const res = await fetch(`${BASE_URL}/api/schema`);
-        if (!res.ok) throw new Error('Failed to fetch schema');
-        return res.json();
+        return {
+            sleep: [
+                { name: "score" },
+                { name: "total_sleep_duration" },
+                { name: "restless_sleep" },
+                { name: "rem_sleep_duration" },
+                { name: "light_sleep_duration" },
+                { name: "deep_sleep_duration" },
+                { name: "lowest_resting_heart_rate" }
+            ],
+            readiness: [
+                { name: "score" },
+                { name: "previous_night_score" },
+                { name: "sleep_balance_score" },
+                { name: "previous_day_activity_score" },
+                { name: "activity_balance_score" },
+                { name: "temperature_score" },
+                { name: "resting_heart_rate_score" },
+                { name: "hrv_balance_score" },
+                { name: "recovery_index_score" }
+            ],
+            activity: [
+                { name: "score" },
+                { name: "stay_active_score" },
+                { name: "move_every_hour_score" },
+                { name: "meet_daily_targets_score" },
+                { name: "training_frequency_score" },
+                { name: "training_volume_score" },
+                { name: "recovery_time_score" },
+                { name: "steps" },
+                { name: "daily_movement" },
+                { name: "inactive_time" },
+                { name: "rest_time" }
+            ]
+        };
     },
 
     getTrends: async (metric: string, startDate: string, endDate: string) => {
@@ -118,29 +105,18 @@ export const api = {
 
     // --- Layout ---
     getLayout: async () => {
-        const res = await fetch(`${BASE_URL}/api/dashboard`);
-        if (!res.ok) throw new Error('Failed to fetch layout');
-        return res.json();
+        return dataService.getLayout();
     },
 
     saveLayout: async (layout: any) => {
-        const res = await fetch(`${BASE_URL}/api/dashboard`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(layout)
-        });
-        if (!res.ok) throw new Error('Failed to save layout');
-        return res.json();
+        return dataService.saveLayout(layout);
     },
 
     // --- Chat ---
-    sendChatMessage: async (message: string, history: ChatMessage[], context?: any) => {
-        const res = await fetch(`${BASE_URL}/api/advisor/chat`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message, history, context })
-        });
-        if (!res.ok) throw new Error('Chat request failed');
-        return res.json();
+    sendChatMessage: async (_message: string, _history: ChatMessage[], _context?: any) => {
+        return {
+            reply: "AI Chat is disabled in the mobile version.",
+            thoughts: ["User asked for AI, but I am just a local mobile app now."]
+        };
     }
 };

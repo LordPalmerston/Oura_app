@@ -166,22 +166,7 @@ export function AppSidebar({
                     )}
                 </div>
 
-                {/* Chat Page Link */}
-                <div className="px-2 mt-2 pt-2 border-t">
-                    <Button
-                        variant={activeView === 'chat-page' ? "secondary" : "ghost"}
-                        className={cn(
-                            "w-full justify-start gap-3",
-                            collapsed ? "px-2 justify-center" : "px-4",
-                            activeView === 'chat-page' && "bg-secondary/50"
-                        )}
-                        onClick={onChatPageSelect}
-                        title={collapsed ? "AI Chat" : undefined}
-                    >
-                        <Sparkles className="h-5 w-5 shrink-0" />
-                        {!collapsed && <span className="truncate flex-1 text-left">AI Chat</span>}
-                    </Button>
-                </div>
+
             </ScrollArea>
 
             {/* Footer */}

@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Edit2, Check } from "lucide-react";
 import { SettingsPanel } from "@/components/dashboard/SettingsPanel";
 import { WidgetEditorPanel } from "@/components/dashboard/WidgetEditorPanel";
-import { ChatPanel } from "@/components/dashboard/ChatPanel";
-import { useChat } from "@/hooks/useChat";
-import { ChatPage } from "@/components/dashboard/ChatPage";
 
 function DashboardApp() {
   const {
@@ -37,9 +34,6 @@ function DashboardApp() {
     data
   } = useDashboard();
 
-  // Chat State
-  const { messages, isLoading, sendMessage, clearHistory } = useChat();
-
   const handleLayoutChange = (newLayout: any[]) => {
     updateActiveDashboard({ layout: newLayout });
   };
@@ -52,16 +46,6 @@ function DashboardApp() {
           onSave={saveEditingWidget}
           onChange={updateEditingWidget}
           widget={editingWidget}
-        />
-      );
-    }
-    if (activePanel === 'chat') {
-      return (
-        <ChatPanel
-          onClose={() => setActivePanel('none')}
-          messages={messages}
-          isLoading={isLoading}
-          onSend={sendMessage}
         />
       );
     }
@@ -78,13 +62,10 @@ function DashboardApp() {
   return (
     <MainLayout
       rightPanel={renderRightPanel()}
-      onChatToggle={() => setActivePanel(activePanel === 'chat' ? 'none' : 'chat')}
-      isChatOpen={activePanel === 'chat'}
       selectedDate={selectedDate}
       onDateChange={(date) => date && setSelectedDate(date)}
       onSettingsClick={() => setActivePanel(activePanel === 'settings' ? 'none' : 'settings')}
 
-      // Dashboard Props
       dashboards={dashboards}
       activeDashboardId={activeDashboardId}
       onDashboardSelect={(id) => {
@@ -94,16 +75,14 @@ function DashboardApp() {
       onDashboardAdd={addDashboard}
       onDashboardDelete={deleteDashboard}
       onDashboardRename={renameDashboard}
-
-      // Navigation
+      
       activeView={activeView}
-      onChatPageSelect={() => setActiveView('chat-page')}
 
       headerActions={
         activeView === 'dashboard' ? (
           <>
             {isEditing && (
-              <Button onClick={() => startEditingWidget()} variant="secondary" size="sm">
+              <Button onClick={() => startEditingWidget()} variant="secondary" size="sm" className="hidden sm:inline-flex">
                 Add Widget
               </Button>
             )}
@@ -119,14 +98,13 @@ function DashboardApp() {
               className="gap-2"
             >
               {isEditing ? <Check className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
-              {isEditing ? "Done Editing" : "Edit Layout"}
+              {isEditing ? "Done" : "Edit"}
             </Button>
           </>
         ) : null
       }
     >
-
-      {activeView === 'dashboard' ? (
+      {activeView === 'dashboard' && (
         <DashboardGrid
           widgets={widgets}
           layout={layout}
@@ -137,13 +115,6 @@ function DashboardApp() {
           onWidgetChange={updateEditingWidget}
           data={data}
           selectedDate={selectedDate}
-        />
-      ) : (
-        <ChatPage
-          messages={messages}
-          isLoading={isLoading}
-          onSend={sendMessage}
-          onClear={clearHistory}
         />
       )}
     </MainLayout>

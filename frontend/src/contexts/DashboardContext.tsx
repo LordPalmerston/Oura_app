@@ -4,12 +4,26 @@ import { useOuraData } from '@/hooks/useOuraData';
 import { useDashboardPersistence } from '@/hooks/useDashboardPersistence';
 import { format } from 'date-fns';
 
+const DEFAULT_WIDGETS: WidgetInstance[] = [
+    { id: '1', type: 'score', title: 'Sleep', width: 'col-span-4', height: 'h-40', config: { dataKey: 'sleep.score', color: '#8AB4F8' } },
+    { id: '2', type: 'score', title: 'Readiness', width: 'col-span-4', height: 'h-40', config: { dataKey: 'readiness.score', color: '#81C995' } },
+    { id: '3', type: 'score', title: 'Activity', width: 'col-span-4', height: 'h-40', config: { dataKey: 'activity.score', color: '#F28B82' } },
+    { id: '4', type: 'trend', title: 'Sleep Trend', width: 'col-span-12', height: 'h-64', config: { dataKey: 'sleep.score', chartType: 'line', color: '#8AB4F8' } }
+];
+
+const DEFAULT_LAYOUT = [
+    { i: '1', x: 0, y: 0, w: 4, h: 4 },
+    { i: '2', x: 4, y: 0, w: 4, h: 4 },
+    { i: '3', x: 8, y: 0, w: 4, h: 4 },
+    { i: '4', x: 0, y: 4, w: 12, h: 6 }
+];
+
 // Initial empty dashboard skeleton
-const EMPTY_DASHBOARD: Dashboard = {
+const DEFAULT_DASHBOARD: Dashboard = {
     id: 'default',
     name: 'Daily Overview',
-    widgets: [],
-    layout: []
+    widgets: DEFAULT_WIDGETS,
+    layout: DEFAULT_LAYOUT
 };
 
 type PanelType = 'none' | 'chat' | 'editor' | 'settings';
@@ -63,7 +77,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
     // Dashboards
-    const [dashboards, setDashboards] = useState<Dashboard[]>([EMPTY_DASHBOARD]);
+    const [dashboards, setDashboards] = useState<Dashboard[]>([DEFAULT_DASHBOARD]);
     const [activeDashboardId, setActiveDashboardId] = useState<string>('default');
 
     // Widget Editing
