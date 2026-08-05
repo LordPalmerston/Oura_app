@@ -11,6 +11,12 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "overrides": {
+    "react-day-picker": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
   "dependencies": {
     "@capacitor/android": "^8.5.0",
     "@capacitor/browser": "^8.0.4",
